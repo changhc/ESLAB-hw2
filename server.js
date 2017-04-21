@@ -17,12 +17,13 @@ server.get('/api/getRealTime', (req, res) => {
 			coordE: 121.5102703 + 0.1 * Math.random() - 0.05,
 			temp: 25.3 + 6 * Math.random(),
 			humidity: 68 + 10 * Math.random(),
+			servoSpeed: 20 + 5 * Math.random(),
 		});
 	}
 	res.send(200, JSON.stringify(body));
 });
 
-server.post('/api/getDevice', (req, res) => {
+server.post('/api/getDeviceData', (req, res) => {
 	try {
 		if (parseInt(req.params.deviceId, 10) < 0) {
 			throw Error('bad request');
@@ -40,14 +41,33 @@ server.post('/api/getDevice', (req, res) => {
 		deviceId: req.params.deviceId,
 		temp: 25.3 + 6 * Math.random(),
 		humidity: 68 + 10 * Math.random(),
+		servoSpeed: 20 + 5 * Math.random(),
 		histTemp: [],
 		histHumid: [],
+		histServo: [],
 	};
 	for (let i = 0; i < 10; ++i) {
 		body.histTemp.push(25.3 + 6 * Math.random());
 		body.histHumid.push(68 + 10 * Math.random());
+		body.histServo.push(20 + 5 * Math.random());
 	}
 	res.send(200, JSON.stringify(body));
+});
+
+server.post('/api/postDeviceData', (req, res) => {
+	try {
+		if (parseInt(req.params.deviceId, 10) < 0) {
+			throw Error('bad request');
+		}
+		if (parseFloat(req.params.deviceId) !== parseInt(req.params.deviceId, 10)) {
+			throw Error('bad request');
+		}
+	} catch (err) {
+		console.error(err);
+		res.send(400);
+	}
+
+	res.send(200);
 });
 
 server.get(/\/*/, restify.serveStatic({
