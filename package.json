@@ -15,7 +15,9 @@
     "isomorphic-fetch": "^2.2.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
-    "react-google-maps": "^6.3.0"
+    "react-google-maps": "^6.3.0",
+    "react-transition-group": "^1.1.2",
+    "recharts": "^0.22.4"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",

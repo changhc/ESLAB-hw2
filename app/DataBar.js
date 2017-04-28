@@ -1,4 +1,6 @@
 import React from 'react'
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, ReferenceLine,
+      ReferenceDot, Tooltip, CartesianGrid, Legend, Brush, ErrorBar, AreaChart, Area } from 'recharts';
 
 function genTimeString(timestamp) {
     let ts = new Date(timestamp);
@@ -32,8 +34,10 @@ export default class DataBar extends React.Component {
 
         histData.forEach((x) => {
             d.push({
-                x_value: genTimeString(x.timestamp),
-                y_value: x.temp,
+                Time: genTimeString(x.timestamp),
+                Temperature: x.temp.toFixed(3)/1,
+                Humidity: x.humidity.toFixed(3)/1,
+                ServoSpeed: x.servoSpeed.toFixed(3)/1,
             });
         })
         console.log(d);
@@ -53,23 +57,48 @@ export default class DataBar extends React.Component {
             let data = this.createDataArray(histData);
 
 
-            let config = {
-                theme: 'blue',
-                width: 50,
-                height: 10,
-                box_size: 20,
-                box_radius: 8,
-                line: false,
-                line_only: false,
-                bordered: false,
-                blink: false
-            };
-
 
             return (
                 <div>
                     <h1>{key}</h1>
                     <p>{pos}</p>
+
+                    <LineChart
+                        width={500}
+                        height={100}
+                        data={data}
+                        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+                    >
+                        <XAxis dataKey="Time" />
+                        <Tooltip />
+                        <CartesianGrid stroke="#f5f5f5" />
+                        <Line type="monotone" dataKey="Temperature" stroke="#387908" yAxisId={1} />
+                    </LineChart>
+
+                    <LineChart
+                        width={500}
+                        height={100}
+                        data={data}
+                        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+                    >
+                        <XAxis dataKey="Time" />
+                        <Tooltip />
+                        <CartesianGrid stroke="#f5f5f5" />
+                        <Line type="monotone" dataKey="Humidity" stroke="#0594F7" yAxisId={1} />
+                    </LineChart>
+
+                    <LineChart
+                        width={500}
+                        height={100}
+                        data={data}
+                        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+                    >
+                        <XAxis dataKey="Time" />
+                        <Tooltip />
+                        <CartesianGrid stroke="#f5f5f5" />
+                        <Line type="monotone" dataKey="ServoSpeed" stroke="#F76505" yAxisId={1} />
+                    </LineChart>
+
                 </div>
             );
         }
