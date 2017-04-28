@@ -43,7 +43,7 @@ server.post('/api/getDeviceData', (req, res) => {
 	};
 	for (let i = 0; i < 10; ++i) {
 		histData.push({
-			timestamp: ts - 30 * 60 * 1000,
+			timestamp: ts - 30 * 60 * 1000 * i,
 			temp: 25.3 + 6 * Math.random(),
 			humidity: 68 + 10 * Math.random(),
 			servoSpeed: 20 + 5 * Math.random(),
