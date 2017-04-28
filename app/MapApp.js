@@ -119,7 +119,10 @@ export default class App extends Component {
                     currMarker: targetMarker,
                     histData: res.histData
                 });
-            });
+            })
+            .catch(function() {
+                console.log("Can't connect to server!");
+            })
 
     }
 
