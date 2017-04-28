@@ -11,6 +11,8 @@
     "dev": "webpack-dev-server --devtool eval --progress --colors --content-base build"
   },
   "dependencies": {
+    "es6-promise": "^4.1.0",
+    "isomorphic-fetch": "^2.2.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-google-maps": "^6.3.0"
