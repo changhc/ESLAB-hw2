@@ -36,21 +36,18 @@ server.post('/api/getDeviceData', (req, res) => {
 		console.error(err);
 		res.send(400);
 	}
-
+	const ts = Date.now();
 	const body = {
-		timestamp: Date.now(),
 		deviceId: req.params.deviceId,
-		temp: 25.3 + 6 * Math.random(),
-		humidity: 68 + 10 * Math.random(),
-		servoSpeed: 20 + 5 * Math.random(),
-		histTemp: [],
-		histHumid: [],
-		histServo: [],
+		histData: [],
 	};
 	for (let i = 0; i < 10; ++i) {
-		body.histTemp.push(25.3 + 6 * Math.random());
-		body.histHumid.push(68 + 10 * Math.random());
-		body.histServo.push(20 + 5 * Math.random());
+		histData.push({
+			timestamp: ts - 30 * 60 * 1000,
+			temp: 25.3 + 6 * Math.random(),
+			humidity: 68 + 10 * Math.random(),
+			servoSpeed: 20 + 5 * Math.random(),
+		})
 	}
 	res.send(200, JSON.stringify(body));
 });
