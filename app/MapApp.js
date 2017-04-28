@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 
-import DataBar from './DataBar.js'
+import DataBar from './DataBar.js';
+
 
 const SimpleMapExampleGoogleMap = withGoogleMap(props => (
     <GoogleMap
@@ -120,9 +121,9 @@ export default class App extends Component {
                     histData: res.histData
                 });
             })
-            .catch(function() {
+        /*.catch(function(err) {
                 console.log("Can't connect to server!");
-            })
+            })*/
 
     }
 
