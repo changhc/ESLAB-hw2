@@ -14,26 +14,24 @@ server.listen(3000, () => {
 server.get('/api/getRealTime', (req, res) => {
   let body = {
     timestamp: Date.now(),
-    dataset: [],
+    data: [],
   };
   for (let key in database) {
     if (database.hasOwnProperty(key)) {
-      dataset.push({
-        deviceId: key,
-        data: database[key][database[key].length - 1],
-      });
+      let deviceData = database[key][database[key].length - 1];
+      deviceData.deviceId = key;
+      deviceData.coordE = ipList[key].coordE;
+      deviceData.coordN = ipList[key].coordN;
+      body.data.push(deviceData);
     }
   }
   res.send(200, JSON.stringify(body));
 });
 
 server.post('/api/getDeviceData', (req, res) => {
-  const id = req.params.deviceId;
+  const id = JSON.parse(req.body).deviceId;
   try {
-    if (parseInt(id, 10) < 0) {
-      throw Error('bad request');
-    }
-    if (parseFloat(id) !== parseInt(id, 10)) {
+    if (!ipList.hasOwnProperty(id)) {
       throw Error('bad request');
     }
   } catch (err) {
@@ -52,11 +50,20 @@ server.post('/api/getDeviceData', (req, res) => {
   res.send(200, JSON.stringify(body));
 });
 
-server.post('/api/postDeviceData', (req, res) => {
+server.post('/api/registerDevice', (req, res) => {
   const ip = req.connection.remoteAddress.replace('::ffff:', '');
   const deviceId = req.body.deviceId;
   if (!ipList[deviceId] || ipList[deviceId] !== ip) {
-    ipList[deviceId] = ip;
+    console.log(`new device: ${deviceId}`);
+    ipList[deviceId] = { ip: ip, coordN: req.body.coordN, coordE: req.body.coordE };
+  }
+  res.send(200);
+});
+
+server.post('/api/postDeviceData', (req, res) => {
+  const deviceId = req.body.deviceId;
+  if (!ipList.hasOwnProperty(deviceId)) {
+    res.send(403, 'no registration');
   }
   try {
     if (parseInt(deviceId, 10) < 0) {
@@ -83,16 +90,16 @@ server.post('/api/postDeviceData', (req, res) => {
 
 server.put('/api/controlDevice', (req, res) => {
   try{
-    const key = req.body.deviceId;
+    const key = JSON.parse(req.body).deviceId;
     if (ipList.hasOwnProperty(key)) {
       console.log(ipList[key]);
       request.put({
         headers: { 'content-type': 'application/json' },
-        url: `http://${ipList[key]}:9999/command`,
+        url: `http://${ipList[key].ip}:9999/command`,
         body: JSON.stringify(req.body),
       }, (err, res2, body) => {
         console.log(err);
-        console.log(res2.statusCode);
+        console.log(res2.statusCode, body);
       });
     }
     res.send(200);

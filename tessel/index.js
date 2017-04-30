@@ -2,37 +2,19 @@
 var tessel = require('tessel');
 var request = require('request');
 var restify = require('restify');
-var plugins = require('restify-plugins');
 var climateLib = require('climate-si7020');
 var servoLib = require('servo-pca9685');
 
 var climate = climateLib.use(tessel.port['A']);
 var servo = servoLib.use(tessel.port['B']);
-var servo1 = { deviceId: require('os').networkInterfaces().eth0[0].mac, position: 0 };
+var servo1 = { pin: 1, deviceId: require('os').networkInterfaces().eth0[0].mac, position: 0, speed: 0 };
 var servoToggle = null;
+var sender = null;
+var requester = null;
 
 climate.on('ready', function () {
   console.log('Connected to climate module');
-
-  // Loop forever
-  setInterval(function () {
-    climate.readTemperature('f', function (err, temp) {
-      climate.readHumidity(function (err, humid) {
-        console.log(`Tessel ID ${tessel.deviceId}\tTemp: ${temp.toFixed(4)}F, Humidity: ${humid.toFixed(4)}%RH`);
-	request.post({
-	  headers: { 'content-type': 'application/json' },
-	  url: 'http://192.168.1.170:3000/api/postDeviceData',
-	  body: JSON.stringify({ deviceId: 123 }),
-	}, (err, res, body) => {
-	  try {
-	    console.log(res.statusCode);
-	  } catch (error) {
-	   console.log(error);
-	  }
-	});
-      });
-    });
-  }, 1000);
+  requester = setInterval(() => sendRequest(), 5000);
 });
 
 climate.on('error', function(err) {
@@ -43,30 +25,99 @@ servo.on('ready', function() {
   console.log('Servo ready');
 });
 
+servo.on('error', function(err) {
+  console.error('Servo error', err);
+});
 
+const sendRequest = () => {
+  request.post({
+    headers: { 'content-type': 'application/json' },
+    url: 'http://192.168.0.101:3000/api/registerDevice',
+    body: JSON.stringify({
+      deviceId: servo1.deviceId,
+      coordN: 25.0030115,
+      coordE: 121.4823595,
+    }),
+  }, (err, res, body) => {
+    try {
+      if (res.statusCode > 300) {
+        console.log(res.statusCode, body);
+        return;
+      }
+      clearInterval(requester);
+      sender = setInterval(function () {
+        climate.readTemperature('c', function (err, temp) {
+          climate.readHumidity(function (err, humid) {
+            console.log(`Tessel ID ${servo1.deviceId}\tTemp: ${temp.toFixed(4)}C, Humidity: ${humid.toFixed(4)}%RH`);
+            request.post({
+              headers: { 'content-type': 'application/json' },
+              url: 'http://192.168.0.101:3000/api/postDeviceData',
+              body: JSON.stringify({
+                timestamp: Date.now(),
+                deviceId: servo1.deviceId,
+                temp: temp.toFixed(4),
+                humidity: humid.toFixed(4),
+                servoSpeed: servo1.speed,
+              }),
+            }, (err, res, body) => {
+              try {
+                if (res.statusCode > 300) {
+                  console.log(res.statusCode);
+                  clearInterval(sender);
+                  stopServo();
+                  requester = setInterval(() => sendRequest(), 5000);
+                }
+              } catch (error) {
+                console.log(error);
+              }
+            });
+          });
+        });
+      }, 5 * 60 * 1000);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+};
+
+const startServo = () => {
+  try {
+    servo.move(servo1.pin, servo1.position);
+    servo1.position += 0.1;
+    if (servo1.position > 1) {
+      servo1.position = 0;
+    }
+
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const stopServo = () => {
+  servo1.speed = 0;
+  if (servoToggle !== null) {
+    clearInterval(servoToggle);
+  }
+};
 // server part
 var server = restify.createServer();
-server.use(plugins.bodyParser());
-
+server.use(restify.bodyParser());
 server.put('/command', (req, res) => {
   console.log(req.body);
-  if (req.body.type === 'servo' && !servo._connected) {
+  const body = JSON.parse(req.body);
+  if (body.type === 'servo' && !servo._connected) {
     res.send(500, 'Servo not connected');
   }
-  if (req.body.deviceId !== servo1.deviceId) {
+  if (body.deviceId !== servo1.deviceId) {
     res.send(404, 'DeviceId mismatch');
   }
-  if (req.body.type === 'servo' && req.body.value === 'on') {
-    servoToggle = setInterval(() => {
-      servo.move(servo1.deviceId, servo1.position);
-      position += 0.1;
-      if (position > 1) {
-        position = 0;
-      }
-    }, 200);
-  } else if (req.body.type === 'servo' && req.body.value === 'off' && servoToggle !== null) {
-      clearInterval(servoToggle);
+  if (body.type === 'servo' && body.value === 'on') {
+    servo1.speed = 0.1;
+    servoToggle = setInterval(() => startServo(), 500);
+  } else if (body.type === 'servo' && body.value === 'off') {
+    stopServo();
   }
+  res.send(200);
 });
 
 server.get('/test', (req, res) => {
