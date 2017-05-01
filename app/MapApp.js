@@ -132,15 +132,15 @@ export default class App extends Component {
                 <div>
                     <SimpleMapExampleGoogleMap
                         containerElement={
-                        <div style={{ height: '78vh' }} />
+                        <div className="map-container" />
                         }
                         mapElement={
-                        <div style={{ height: '100%' }} />
+                        <div className="map-element" />
                         }
                         markers={this.state.markers}
                         onMarkerClick={this.handleMarkerClick.bind(this)}
                     />
-                    <div style={{ height: '15vh' }}>
+                    <div className="data-container">
                         <DataBar
                             currMarker={this.state.currMarker}
                             histData={this.state.histData}

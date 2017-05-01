@@ -50,8 +50,8 @@ export default class DataBar extends React.Component {
         if (this.props.currMarker !== null && this.props.histData !== []) {
             marker = this.props.currMarker;
             let histData = this.props.histData;
-            key = marker.key;
-            pos = "x: " + marker.position.lat.toFixed(3) + " y: " + marker.position.lng.toFixed(3);
+            key = "Device ID: " +  marker.key;
+            pos = "(Lat, Lng) = (" + marker.position.lat.toFixed(3) + ", " + marker.position.lng.toFixed(3) + ")";
 
             //console.log(histData);
             let data = this.createDataArray(histData);
@@ -59,58 +59,72 @@ export default class DataBar extends React.Component {
 
 
             return (
-                <div>
-                    <h1>{key}</h1>
-                    <p>{pos}</p>
+                <div className="activated-databar">
+                    <div className="device-info">
+                        <h2 id="device-name">{key}</h2>
+                        <h3 id="coordinates">{pos}</h3>
+                    </div>
 
-                    <LineChart
-                        width={500}
-                        height={100}
-                        data={data}
-                        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-                    >
-                        <XAxis dataKey="Time" />
-                        <Tooltip />
-                        <CartesianGrid stroke="#f5f5f5" />
-                        <Line type="monotone" dataKey="Temperature" stroke="#387908" yAxisId={1} />
-                    </LineChart>
+                    <div className="device-chart">
+                        <h3 id="device-info">Temperature</h3>
+                        <LineChart
+                            width={450}
+                            height={100}
+                            data={data}
+                            margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
+                        >
+                            <XAxis dataKey="Time" />
+                            <YAxis domain={['auto', 'auto']} />
+                            <Tooltip />
+                            <CartesianGrid stroke="#f5f5f5" />
+                            <Line type="monotone" dataKey="Temperature" stroke="#387908" />
+                        </LineChart>
+                    </div>
 
-                    <LineChart
-                        width={500}
-                        height={100}
-                        data={data}
-                        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-                    >
-                        <XAxis dataKey="Time" />
-                        <Tooltip />
-                        <CartesianGrid stroke="#f5f5f5" />
-                        <Line type="monotone" dataKey="Humidity" stroke="#0594F7" yAxisId={1} />
-                    </LineChart>
+                    <div className="device-chart">
+                        <h3 id="device-info">Humidity</h3>
+                        <LineChart
+                            width={450}
+                            height={100}
+                            data={data}
+                            margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
+                        >
+                            <XAxis dataKey="Time" />
+                            <YAxis domain={['auto', 'auto']} />
+                            <Tooltip />
+                            <CartesianGrid stroke="#f5f5f5" />
+                            <Line type="monotone" dataKey="Humidity" stroke="#0594F7" />
+                        </LineChart>
+                    </div>
 
-                    <LineChart
-                        width={500}
-                        height={100}
-                        data={data}
-                        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-                    >
-                        <XAxis dataKey="Time" />
-                        <Tooltip />
-                        <CartesianGrid stroke="#f5f5f5" />
-                        <Line type="monotone" dataKey="ServoSpeed" stroke="#F76505" yAxisId={1} />
-                    </LineChart>
+                    <div className="device-chart">
+                        <h3 id="device-info">Servo Speed</h3>
+                        <LineChart
+                            width={450}
+                            height={100}
+                            data={data}
+                            margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
+                        >
+                            <XAxis dataKey="Time" />
+                            <YAxis domain={['auto', 'auto']} />
+                            <Tooltip />
+                            <CartesianGrid stroke="#f5f5f5" />
+                            <Line type="monotone" dataKey="ServoSpeed" stroke="#F76505" />
+                        </LineChart>
+                    </div>
 
                 </div>
             );
         }
         else if (this.props.currMarker !== null && this.props.histData === []) {
             return (
-                <div>
+                <div className="error-databar">
                     <h1>Can't retrieve data from server</h1>
                 </div>
             );
         }
         return (
-            <div>
+            <div className="default-databar">
                 <h1>{key}</h1>
             </div>
         );
