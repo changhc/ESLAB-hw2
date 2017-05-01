@@ -40,8 +40,44 @@ export default class DataBar extends React.Component {
                 ServoSpeed: x.servoSpeed.toFixed(3)/1,
             });
         })
-        console.log(d);
         return d;
+    }
+
+    handleButtonClick(bTurnedOn) {
+        const targetMarker = this.props.currMarker;
+        let headers = new Headers({
+            'Content-Type':'application/json'
+        });
+        let init;
+        if (bTurnedOn) {
+            init = { method: 'PUT',
+                headers: headers,
+                mode: 'cors',
+                cache: 'default',
+                body: JSON.stringify({
+                    deviceId: targetMarker.key,
+                    type: 'servo',
+                    value: 'off'
+                })
+            };
+        }
+        else {
+            init = { method: 'PUT',
+                headers: headers,
+                mode: 'cors',
+                cache: 'default',
+                body: JSON.stringify({
+                    deviceId: targetMarker.key,
+                    type: 'servo',
+                    value: 'on'
+                })
+            };
+        }
+
+        // let req = new Request('http://localhost:3000/api/getDeviceData', init);
+        let req = new Request('http://8b60cd20.ngrok.io/api/controlDevice', init);
+
+        fetch(req)
     }
 
     render() {
@@ -53,8 +89,14 @@ export default class DataBar extends React.Component {
             key = "Device ID: " +  marker.key;
             pos = "(Lat, Lng) = (" + marker.position.lat.toFixed(3) + ", " + marker.position.lng.toFixed(3) + ")";
 
-            //console.log(histData);
+            // console.log(histData);
             let data = this.createDataArray(histData);
+
+            let bTurnedOn = false;
+
+            if (data[data.length-1].ServoSpeed > 0.0) {
+                bTurnedOn = true;
+            }
 
 
 
@@ -63,6 +105,7 @@ export default class DataBar extends React.Component {
                     <div className="device-info">
                         <h2 id="device-name">{key}</h2>
                         <h3 id="coordinates">{pos}</h3>
+                        <button onClick={this.handleButtonClick.bind(this, bTurnedOn)}>{bTurnedOn ? "Off" : "On"}</button>
                     </div>
 
                     <div className="device-chart">
