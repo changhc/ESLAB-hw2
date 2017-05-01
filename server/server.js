@@ -16,7 +16,7 @@ server.listen(3333, () => {
   console.log('%s listening to %s', server.name, server.url);
 });
 
-server.get('/api/getRealTime', (req, res) => {
+server.get('/api/realTime', (req, res) => {
   let body = {
     timestamp: Date.now(),
     data: [],
@@ -33,7 +33,7 @@ server.get('/api/getRealTime', (req, res) => {
   res.send(200, JSON.stringify(body));
 });
 
-server.post('/api/getDeviceData', (req, res) => {
+server.post('/api/histData', (req, res) => {
   const id = req.body.deviceId;
   try {
     if (!ipList.hasOwnProperty(id)) {
@@ -56,7 +56,7 @@ server.post('/api/getDeviceData', (req, res) => {
   res.send(200, JSON.stringify(body));
 });
 
-server.post('/api/registerDevice', (req, res) => {
+server.post('/api/register', (req, res) => {
   const ip = req.connection.remoteAddress.replace('::ffff:', '');
   const deviceId = req.body.deviceId;
   if (!ipList[deviceId] || ipList[deviceId] !== ip) {
@@ -66,7 +66,7 @@ server.post('/api/registerDevice', (req, res) => {
   res.send(200);
 });
 
-server.post('/api/postDeviceData', (req, res) => {
+server.post('/api/device', (req, res) => {
   const deviceId = req.body.deviceId;
   if (!ipList.hasOwnProperty(deviceId)) {
     res.send(403, 'no registration');
@@ -94,7 +94,7 @@ server.post('/api/postDeviceData', (req, res) => {
   }
 });
 
-server.put('/api/controlDevice', (req, res) => {
+server.put('/api/control', (req, res) => {
   try{
     const key = req.body.deviceId;
     if (ipList.hasOwnProperty(key)) {

@@ -33,7 +33,7 @@ servo.on('error', function(err) {
 const sendRequest = () => {
   request.post({
     headers: { 'content-type': 'application/json' },
-    url: remoteDomain + '/api/registerDevice',
+    url: remoteDomain + '/api/register',
     body: JSON.stringify({
       deviceId: servo1.deviceId,
       coordN: 25.0030115,
@@ -52,7 +52,7 @@ const sendRequest = () => {
             console.log(`Tessel ID ${servo1.deviceId}\tTemp: ${temp.toFixed(4)}C, Humidity: ${humid.toFixed(4)}%RH`);
             request.post({
               headers: { 'content-type': 'application/json' },
-              url: remoteDomain + '/api/postDeviceData',
+              url: remoteDomain + '/api/device',
               body: JSON.stringify({
                 timestamp: Date.now(),
                 deviceId: servo1.deviceId,
