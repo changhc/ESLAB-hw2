@@ -7,7 +7,12 @@ const server = restify.createServer();
 let ipList = {};
 let database = {};
 server.use(restify.bodyParser());
-server.listen(3000, () => {
+server.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+server.listen(3333, () => {
   console.log('%s listening to %s', server.name, server.url);
 });
 
@@ -29,7 +34,7 @@ server.get('/api/getRealTime', (req, res) => {
 });
 
 server.post('/api/getDeviceData', (req, res) => {
-  const id = JSON.parse(req.body).deviceId;
+  const id = req.body.deviceId;
   try {
     if (!ipList.hasOwnProperty(id)) {
       throw Error('bad request');
@@ -44,7 +49,8 @@ server.post('/api/getDeviceData', (req, res) => {
     histData: [],
   };
   const endIndex = database[id].length;
-  for (let i = 10; i > 0; --i) {
+  const dataCount = endIndex < 10 ? endIndex : 10;
+  for (let i = dataCount; i > 0; --i) {
     body.histData.push(database[id][endIndex - i]);
   }
   res.send(200, JSON.stringify(body));
@@ -83,14 +89,14 @@ server.post('/api/postDeviceData', (req, res) => {
     });
     res.send(202);
   } catch (err) {
-    console.error(err);
+    console.log(err);
     res.send(400);
   }
 });
 
 server.put('/api/controlDevice', (req, res) => {
   try{
-    const key = JSON.parse(req.body).deviceId;
+    const key = req.body.deviceId;
     if (ipList.hasOwnProperty(key)) {
       console.log(ipList[key]);
       request.put({
@@ -98,8 +104,7 @@ server.put('/api/controlDevice', (req, res) => {
         url: `http://${ipList[key].ip}:9999/command`,
         body: JSON.stringify(req.body),
       }, (err, res2, body) => {
-        console.log(err);
-        console.log(res2.statusCode, body);
+        if (err) console.log(err);
       });
     }
     res.send(200);

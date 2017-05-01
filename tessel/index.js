@@ -12,6 +12,7 @@ var servoToggle = null;
 var sender = null;
 var requester = null;
 
+var remoteDomain = 'http://192.168.0.101:3333';
 climate.on('ready', function () {
   console.log('Connected to climate module');
   requester = setInterval(() => sendRequest(), 5000);
@@ -32,7 +33,7 @@ servo.on('error', function(err) {
 const sendRequest = () => {
   request.post({
     headers: { 'content-type': 'application/json' },
-    url: 'http://192.168.0.101:3000/api/registerDevice',
+    url: remoteDomain + '/api/registerDevice',
     body: JSON.stringify({
       deviceId: servo1.deviceId,
       coordN: 25.0030115,
@@ -51,12 +52,12 @@ const sendRequest = () => {
             console.log(`Tessel ID ${servo1.deviceId}\tTemp: ${temp.toFixed(4)}C, Humidity: ${humid.toFixed(4)}%RH`);
             request.post({
               headers: { 'content-type': 'application/json' },
-              url: 'http://192.168.0.101:3000/api/postDeviceData',
+              url: remoteDomain + '/api/postDeviceData',
               body: JSON.stringify({
                 timestamp: Date.now(),
                 deviceId: servo1.deviceId,
-                temp: temp.toFixed(4),
-                humidity: humid.toFixed(4),
+                temp: temp,
+                humidity: humid,
                 servoSpeed: servo1.speed,
               }),
             }, (err, res, body) => {
@@ -73,7 +74,7 @@ const sendRequest = () => {
             });
           });
         });
-      }, 5 * 60 * 1000);
+      }, 5 * 1000);
     } catch (error) {
       console.log(error);
     }
@@ -104,7 +105,7 @@ var server = restify.createServer();
 server.use(restify.bodyParser());
 server.put('/command', (req, res) => {
   console.log(req.body);
-  const body = JSON.parse(req.body);
+  const body = req.body;
   if (body.type === 'servo' && !servo._connected) {
     res.send(500, 'Servo not connected');
   }
@@ -112,8 +113,10 @@ server.put('/command', (req, res) => {
     res.send(404, 'DeviceId mismatch');
   }
   if (body.type === 'servo' && body.value === 'on') {
-    servo1.speed = 0.1;
-    servoToggle = setInterval(() => startServo(), 500);
+    if (servo1.speed === 0) {
+      servo1.speed = 0.1;
+      servoToggle = setInterval(() => startServo(), 500);
+    }
   } else if (body.type === 'servo' && body.value === 'off') {
     stopServo();
   }
