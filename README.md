@@ -27,13 +27,8 @@ backend branch 主要是負責後端伺服器以及 Tessel 2 的程式碼
   
   4. 在 tessel 資料夾下執行 ```t2 run index.js```
 
-### 合併使用
-
-把 compile 完的 html, js, css 放入 server 資料夾的 src 資料夾內，啟動 server 即可。
 
 
-
-
-### 討論&API List
+### 討論 & API List
 
     https://hackpad.com/ES-hw2-Mvwf4Xn5Hk5
