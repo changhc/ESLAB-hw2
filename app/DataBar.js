@@ -75,7 +75,7 @@ export default class DataBar extends React.Component {
         }
 
         // let req = new Request('http://localhost:3000/api/getDeviceData', init);
-        let req = new Request('http://8b60cd20.ngrok.io/api/controlDevice', init);
+        let req = new Request('http://8b60cd20.ngrok.io/api/control', init);
 
         fetch(req)
     }

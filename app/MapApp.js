@@ -79,7 +79,7 @@ export default class App extends Component {
                               mode: 'cors',
                               cache: 'default' };
         // let getDeviceRequest = new Request('http://localhost:3000/api/getRealTime', getDeviceInit);
-        let getDeviceRequest = new Request('http://8b60cd20.ngrok.io/api/getRealTime', getDeviceInit);
+        let getDeviceRequest = new Request('http://8b60cd20.ngrok.io/api/realTime', getDeviceInit);
         // let getDeviceRequest = new Request('/api/getRealTime', getDeviceInit);
         fetch(getDeviceRequest)
             .then(res => res.json())
@@ -111,7 +111,7 @@ export default class App extends Component {
                               body: JSON.stringify({deviceId: targetMarker.key})
         };
         // let req = new Request('http://localhost:3000/api/getDeviceData', init);
-        let req = new Request('http://8b60cd20.ngrok.io/api/getDeviceData', init);
+        let req = new Request('http://8b60cd20.ngrok.io/api/histData', init);
 
         var data = null;
         //console.log(targetMarker.key);
