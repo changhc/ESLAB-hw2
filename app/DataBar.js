@@ -5,7 +5,6 @@ import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, ReferenceLine,
 function genTimeString(timestamp) {
     let ts = new Date(timestamp);
     let str = "";
-    //str = ts.getFullYear() + "." + ts.getMonth() + "." + ts.getDate() + "." + ts.getHours();
 
     let min = "";
     if (ts.getMinutes() < 10) {
@@ -74,8 +73,7 @@ export default class DataBar extends React.Component {
             };
         }
 
-        // let req = new Request('http://localhost:3000/api/getDeviceData', init);
-        let req = new Request('http://8b60cd20.ngrok.io/api/control', init);
+        let req = new Request('http://localhost:3000/api/getDeviceData', init);
 
         fetch(req)
     }

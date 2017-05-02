@@ -36,7 +36,6 @@ const arrayToMarkers = (arr) => {
             key: e.deviceId
         })
     });
-    //console.log(markers);
     return markers;
 }
 
@@ -48,7 +47,7 @@ export default class App extends Component {
         super(props);
         this.state = {
             markers: [
-            /*
+            /* Example
             {
                   position: {
                     lat: 25.0112183,
@@ -70,17 +69,13 @@ export default class App extends Component {
 
     componentDidMount() {
         let getDeviceHeaders = new Headers({
-        //    'Access-Control-Allow-Origin':'localhost:8000',
-        //    'Access-Control-Allow-Methods':'GET, OPTIONS',
             'Content-Type':'application/json'
         });
         let getDeviceInit = { method: 'GET',
                               headers: getDeviceHeaders,
                               mode: 'cors',
                               cache: 'default' };
-        // let getDeviceRequest = new Request('http://localhost:3000/api/getRealTime', getDeviceInit);
-        let getDeviceRequest = new Request('http://8b60cd20.ngrok.io/api/realTime', getDeviceInit);
-        // let getDeviceRequest = new Request('/api/getRealTime', getDeviceInit);
+        let getDeviceRequest = new Request('http://localhost:3000/api/getRealTime', getDeviceInit);
         fetch(getDeviceRequest)
             .then(res => res.json())
             .then(res => JSON.parse(res))
@@ -97,11 +92,8 @@ export default class App extends Component {
 
 
     handleMarkerClick(targetMarker) {
-        //console.log(targetMarker);
 
         let headers = new Headers({
-        //    'Access-Control-Allow-Origin':'localhost:8000',
-        //    'Access-Control-Allow-Methods':'POST, OPTIONS',
             'Content-Type':'application/json'
         });
         let init = { method: 'POST',
@@ -110,11 +102,10 @@ export default class App extends Component {
                               cache: 'default',
                               body: JSON.stringify({deviceId: targetMarker.key})
         };
-        // let req = new Request('http://localhost:3000/api/getDeviceData', init);
-        let req = new Request('http://8b60cd20.ngrok.io/api/histData', init);
+
+        let req = new Request('http://localhost:3000/api/getDeviceData', init);
 
         var data = null;
-        //console.log(targetMarker.key);
 
         fetch(req)
             .then(res => res.json())
@@ -125,9 +116,6 @@ export default class App extends Component {
                     histData: res.histData
                 });
             })
-        /*.catch(function(err) {
-                console.log("Can't connect to server!");
-            })*/
 
     }
 
