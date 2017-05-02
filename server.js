@@ -13,6 +13,7 @@ server.get('/api/getRealTime', (req, res) => {
 	};
 	for (let i = 0; i < 5; ++i) {
 		body.data.push({
+			deviceId: i,
 			coordN: 25.0314324 + 0.2 * Math.random() - 0.1,
 			coordE: 121.5102703 + 0.1 * Math.random() - 0.05,
 			temp: 25.3 + 6 * Math.random(),
@@ -35,21 +36,18 @@ server.post('/api/getDeviceData', (req, res) => {
 		console.error(err);
 		res.send(400);
 	}
-
+	const ts = Date.now();
 	const body = {
-		timestamp: Date.now(),
 		deviceId: req.params.deviceId,
-		temp: 25.3 + 6 * Math.random(),
-		humidity: 68 + 10 * Math.random(),
-		servoSpeed: 20 + 5 * Math.random(),
-		histTemp: [],
-		histHumid: [],
-		histServo: [],
+		histData: [],
 	};
 	for (let i = 0; i < 10; ++i) {
-		body.histTemp.push(25.3 + 6 * Math.random());
-		body.histHumid.push(68 + 10 * Math.random());
-		body.histServo.push(20 + 5 * Math.random());
+		histData.push({
+			timestamp: ts - 30 * 60 * 1000 * i,
+			temp: 25.3 + 6 * Math.random(),
+			humidity: 68 + 10 * Math.random(),
+			servoSpeed: 20 + 5 * Math.random(),
+		})
 	}
 	res.send(200, JSON.stringify(body));
 });
