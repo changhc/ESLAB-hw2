@@ -2,7 +2,7 @@
 
 ### Download released version here
 
-[https://github.com/changhc/ESLAB-hw2/releases]
+https://github.com/changhc/ESLAB-hw2/releases
 
 Unzip the file.
 
@@ -40,7 +40,7 @@ There are 3 directories: UI, server and tessel.
   
   4. ```npm run dev```
   
-  5. Open [localhost:8000] in your browser.
+  5. Open http://localhost:8000 in your browser.
 
 
 ### Discussion & API List
