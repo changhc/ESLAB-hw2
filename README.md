@@ -34,7 +34,7 @@ There are 3 directories: UI, server and tessel.
 
   1. ```cd ./UI```
 
-  2. (Optional. default:localhost:3000 ) Change the fetch function in ```MapApp.js``` and ```DataBar.js``` according to your server API endpoint.
+  2. (Optional) Change the fetch function in ```MapApp.js``` and ```DataBar.js``` according to your server API endpoint. (default: ```localhost:3000/api/```)
   
   3. ```npm install```
   
