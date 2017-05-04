@@ -1,17 +1,16 @@
 # ESLAB-hw2
 
-### 使用說明
+### Download released version here
 
-master branch 內的檔案並無作用，我們將會用到的程式碼分別放在 UI 以及 backend 兩個 branch
+```https://github.com/changhc/ESLAB-hw2/releases```
 
-UI branch 放的是前端的部份
-
-backend branch 主要是負責後端伺服器以及 Tessel 2 的程式碼
+Unzip the file. There are 3 directories: UI, server and tessel.
 
 
-### 使用方法
 
-  UI：
+### Usage
+
+  frontend：
 
   1. 需要先確認 API 為本地或者是遠端，依此去更改 MapApp.js 以及 DataBar.js 內的 fetch
 
@@ -29,6 +28,6 @@ backend branch 主要是負責後端伺服器以及 Tessel 2 的程式碼
 
 
 
-### 討論 & API List
+### Discussion & API List
 
     https://hackpad.com/ES-hw2-Mvwf4Xn5Hk5
