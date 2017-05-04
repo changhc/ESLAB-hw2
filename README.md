@@ -6,7 +6,7 @@ https://github.com/changhc/ESLAB-hw2/releases
 
 Unzip the file.
 
-There are 3 directories: UI, server and tessel.
+There are 3 directories: ```UI```, ```server``` and ```tessel```.
 
 ### Usage
 
@@ -34,7 +34,9 @@ There are 3 directories: UI, server and tessel.
 
   1. ```cd ./UI```
 
-  2. (Optional) Change the fetch function in ```MapApp.js``` and ```DataBar.js``` according to your server API endpoint. (default: ```localhost:3000/api/```)
+  2. (Optional) Change the fetch function in ```MapApp.js``` and ```DataBar.js``` according to your server API endpoint. 
+  
+  (default: ```localhost:3000/api/```)
   
   3. ```npm install```
   
