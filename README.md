@@ -26,7 +26,7 @@ There are 3 directories: UI, server and tessel.
   
   2. ```npm install```
   
-  3. Change ```remoteDomain``` in ```index.js``` according to the web server's domain name or public IP.
+  3. (IMPORTANT!) Change ```remoteDomain``` in ```index.js``` according to the web server's domain name or public IP.
 
   4. ```t2 run index.js```
 
@@ -34,7 +34,7 @@ There are 3 directories: UI, server and tessel.
 
   1. ```cd ./UI```
 
-  2. (Optional) Change the fetch function in ```MapApp.js``` and ```DataBar.js``` according to your API endpoint.
+  2. (Optional. default:localhost:3000 ) Change the fetch function in ```MapApp.js``` and ```DataBar.js``` according to your server API endpoint.
   
   3. ```npm install```
   
